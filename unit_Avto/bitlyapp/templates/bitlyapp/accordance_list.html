@@ -1,0 +1,28 @@
+{% extends "bitlyapp/base.html" %}
+
+{% block title %}
+    List of links
+{% endblock %}
+
+{% block body %}
+    <div class="fixed-container">
+        <h1>List of links</h1>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Full url</th>
+                <th scope="col">Short url</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for object in object_list %}
+                <tr>
+                    <th scope="row">{{ object.pk }}</th>
+                    <td><a class="links" href='{{ object.full_url }}'>{{ object.full_url }}</a>
+                    <td><a class="links" href='{{ object.short_url }}'>{{ object.short_url }}</a>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+{% endblock %}

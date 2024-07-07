@@ -1,0 +1,17 @@
+{% extends "bitlyapp/base.html" %}
+
+{% block title %}
+    Create a link
+{% endblock %}
+
+{% block body %}
+    <div class="fixed-container">
+        <h1>Create a link</h1>
+        <br>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary btn-lg">Create a link</button>
+        </form>
+    </div>
+{% endblock %}
