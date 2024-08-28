@@ -30,16 +30,16 @@ class AccordanceSerializer(serializers.Serializer):
         if custom_url:
             # проверка на существование короткой ссылки с таким же custom_url
             try:
-                obj = Accordance.objects.get(short_url="http://127.0.0.1:8000/bitly/" + custom_url + "/")
+                obj = Accordance.objects.get(short_url="http://127.0.0.1:8000/" + custom_url + "/")
                 if obj:
                     # {"full_url": "https://docs.djangoproject.com/en/5.0/ref/class-based-views/base/", "custom_url": "mycustomurl"}
                     raise serializers.ValidationError("Such a short link already exists")
             except Accordance.DoesNotExist:
                 pass
-            short_url = f"http://127.0.0.1:8000/bitly/{custom_url}/"
+            short_url = f"http://127.0.0.1:8000/{custom_url}/"
         else:
             last = Accordance.objects.last()
             next_pk = (last.pk + 1) if last else 1
-            short_url = f"http://127.0.0.1:8000/bitly/{next_pk}/"
+            short_url = f"http://127.0.0.1:8000/{next_pk}/"
         accordance = Accordance.objects.create(full_url=full_url, short_url=short_url)
         return accordance

@@ -1,13 +1,47 @@
 version: "3.10"
 
 services:
+  db:
+    image: postgres:16.2
+    restart: always
+    volumes:
+      - unit_auto_postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: unit_auto_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "54322:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - default
+
   unit_autoapp:
     build:
       dockerfile: ./Dockerfile
-    command:
-      - "python"
-      - "manage.py"
-      - "runserver"
-      - "0.0.0.0:8080"
+    container_name: unit_autoapp
+    command: >
+      sh -c '/wait-for-it.sh db:5432 -- python manage.py runserver 0.0.0.0:8000'
     ports:
-      - "8000:8080"
+      - "8000:8000"
+    environment:
+      - DATABASE_NAME=unit_auto_db
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=admin
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+    depends_on:
+      - db
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  unit_auto_postgres_data:

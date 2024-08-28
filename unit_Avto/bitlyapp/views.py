@@ -44,15 +44,15 @@ class AccordanceCreateView(CreateView):
         self.object = form.save(commit=False)
         custom_url = self.request.POST.get('custom_url', None)
         if custom_url:
-            if Accordance.objects.filter(short_url=f"http://127.0.0.1:8000/bitly/{custom_url}/").exists():
+            if Accordance.objects.filter(short_url=f"http://127.0.0.1:8000/{custom_url}/").exists():
                 form.add_error('custom_url', forms.ValidationError("There is already a short link for this URL"))
                 return self.form_invalid(form)
             else:
-                short_url = f"http://127.0.0.1:8000/bitly/{custom_url}/"
+                short_url = f"http://127.0.0.1:8000/{custom_url}/"
         else:
             last = Accordance.objects.last()
             next_pk = (last.pk + 1) if last else 1
-            short_url = f"http://127.0.0.1:8000/bitly/{next_pk}/"
+            short_url = f"http://127.0.0.1:8000/{next_pk}/"
         self.object.short_url = short_url
         self.object.save()
         return super().form_valid(form)
@@ -73,5 +73,5 @@ class AccordanceRedirect(RedirectView):
     permanent = True
 
     def get_redirect_url(self, *args, **kwargs):
-        obj = get_object_or_404(Accordance, short_url="http://127.0.0.1:8000/bitly/" + kwargs["short_url"] + "/")
+        obj = get_object_or_404(Accordance, short_url="http://127.0.0.1:8000/" + kwargs["short_url"] + "/")
         return obj.full_url

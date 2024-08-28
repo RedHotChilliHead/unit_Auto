@@ -15,7 +15,7 @@ class APIAccordanceTestCase(APITestCase):
     def setUp(self):
         self.short_url = "ggl"
         self.accordance = Accordance.objects.create(full_url="https://www.google.com/",
-                                                    short_url=f"http://127.0.0.1:8000/bitly/{self.short_url}/")
+                                                    short_url=f"http://127.0.0.1:8000/{self.short_url}/")
 
     def tearDown(self) -> None:
         self.accordance.delete()
@@ -49,7 +49,7 @@ class APIAccordanceTestCase(APITestCase):
         self.assertTrue(
             Accordance.objects.filter(full_url=post_data['full_url']).exists())  # Убеждаемся, что соответствие создано
         accordance = Accordance.objects.get(full_url=post_data['full_url'])
-        expected_data = "http://127.0.0.1:8000/bitly/" + post_data['custom_url'] + "/"
+        expected_data = "http://127.0.0.1:8000/" + post_data['custom_url'] + "/"
         self.assertEqual(accordance.short_url, expected_data)  # Убеждаемся, что кастомная ссылка создана правильно
 
     def test_accordance_validation_api_view(self):
@@ -97,7 +97,7 @@ class AccordanceTestCase(TestCase):
     def setUp(self):
         self.short_url = "ggl"
         self.accordance = Accordance.objects.create(full_url="https://www.google.com/",
-                                                    short_url=f"http://127.0.0.1:8000/bitly/{self.short_url}/")
+                                                    short_url=f"http://127.0.0.1:8000/{self.short_url}/")
 
     def tearDown(self) -> None:
         self.accordance.delete()
@@ -147,10 +147,10 @@ class AccordanceTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, post_data['full_url'])
 
-        self.assertContains(response, f"http://127.0.0.1:8000/bitly/{next_pk}/")
+        self.assertContains(response, f"http://127.0.0.1:8000/{next_pk}/")
         self.assertTrue(
             Accordance.objects.filter(full_url=post_data['full_url']).exists())  # Убеждаемся, что соответствие создано
-        self.assertEqual(f"http://127.0.0.1:8000/bitly/{next_pk}/",
+        self.assertEqual(f"http://127.0.0.1:8000/{next_pk}/",
                          Accordance.objects.get(
                              full_url=post_data['full_url']).short_url)  # Убеждаемся, что короткая ссылка существует
 
@@ -172,10 +172,10 @@ class AccordanceTestCase(TestCase):
         response = self.client.get(response.url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, post_data['full_url'])
-        self.assertContains(response, f"http://127.0.0.1:8000/bitly/{post_data['custom_url']}/")
+        self.assertContains(response, f"http://127.0.0.1:8000/{post_data['custom_url']}/")
         self.assertTrue(
             Accordance.objects.filter(full_url=post_data['full_url']).exists())  # Убеждаемся, что соответствие создано
-        self.assertEqual(f"http://127.0.0.1:8000/bitly/{post_data['custom_url']}/",
+        self.assertEqual(f"http://127.0.0.1:8000/{post_data['custom_url']}/",
                          Accordance.objects.get(
                              full_url=post_data['full_url']).short_url)  # Убеждаемся, что короткая ссылка существует
 
