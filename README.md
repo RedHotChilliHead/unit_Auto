@@ -76,12 +76,24 @@ POST http://localhost:8000/
 ```http
 POST /
 {
-  "full_url": "https://www.google.com"
+  "full_url": "https://vuzopedia.ru/program/bakispec/3342/varianty?ege=mat;rus;inf;&forma=ochnaya"
 }
 ```
 
 Также метод POST предоставляет возможность создания кастомной ссылки, для этого необходимо добавить параметр "custom_url".
 
+#### Пример ответа
+```
+HTTP 201 Created
+Allow: POST, OPTIONS
+Content-Type: application/json
+Vary: Accept
+
+{
+    "full_url": "https://vuzopedia.ru/program/bakispec/3342/varianty?ege=mat;rus;inf;&forma=ochnaya",
+    "short_url": "http://127.0.0.1:8000/7/"
+}
+```
 #### Пример запроса на создание кастомной ссылки
 
 ```http
@@ -89,6 +101,19 @@ POST /
 {
   "full_url": "https://docs.python.org/3/library/datetime.html",
   "custom_url": "mycustomurl"
+}
+```
+
+#### Пример ответа
+```
+HTTP 201 Created
+Allow: POST, OPTIONS
+Content-Type: application/json
+Vary: Accept
+
+{
+    "full_url": "https://docs.python.org/3/library/datetime.html",
+    "short_url": "http://127.0.0.1:8000/mycustomurl/"
 }
 ```
 
@@ -104,12 +129,12 @@ POST /
 #### URL
 
 ```
-POST http://localhost:8000/api-list/
+GET http://localhost:8000/api-list/
 ```
 
-#### Пример запроса
+#### Пример ответа
 
-```http
+```
 HTTP 200 OK
 Allow: GET, HEAD, OPTIONS
 Content-Type: application/json
