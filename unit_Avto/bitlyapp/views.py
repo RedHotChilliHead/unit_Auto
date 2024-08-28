@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
+from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -31,6 +32,15 @@ class AccordanceApiView(APIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
+class AccordanceListApiView(ListAPIView):
+    """
+    Метод GET предоставляет список доступных коротких ссылок
+    """
+    queryset = Accordance.objects.all()
+    serializer_class = AccordanceSerializer
+
+
 class AccordanceCreateView(CreateView):
     """
     Создание короткой ссылки
@@ -56,6 +66,7 @@ class AccordanceCreateView(CreateView):
         self.object.short_url = short_url
         self.object.save()
         return super().form_valid(form)
+
 
 class AccordanceListView(ListView):
     """

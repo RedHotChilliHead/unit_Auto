@@ -52,6 +52,19 @@ class APIAccordanceTestCase(APITestCase):
         expected_data = "http://127.0.0.1:8000/" + post_data['custom_url'] + "/"
         self.assertEqual(accordance.short_url, expected_data)  # Убеждаемся, что кастомная ссылка создана правильно
 
+    def test_accordance_list_url_api_view(self):
+        """
+        Проверка получения списка ссылок через API
+        """
+        queryset = Accordance.objects.all()
+        expected_data = []
+        for q in queryset:
+            expected_data.append({"full_url": q.full_url, "short_url": q.short_url})
+        response = self.client.get(reverse('bitlyapp:accordance-api-list'))
+        self.assertEqual(response.status_code, 200)
+        response_data = json.loads(response.content)
+        self.assertEqual(response_data, expected_data)
+
     def test_accordance_validation_api_view(self):
         """
         Проверка валидации сериализатора
@@ -179,6 +192,22 @@ class AccordanceTestCase(TestCase):
                          Accordance.objects.get(
                              full_url=post_data['full_url']).short_url)  # Убеждаемся, что короткая ссылка существует
 
+    def test_accordance_list_url_view(self):
+        """
+        Проверка получения списка ссылок
+        """
+        queryset = Accordance.objects.all()
+        response = self.client.get(reverse('bitlyapp:accordance-list'))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, 'List of links', html=True)
+        self.assertContains(response, 'Full url', html=True)
+        self.assertContains(response, 'Short url', html=True)
+        self.assertContains(response, '#', html=True)
+
+        for q in queryset:
+            self.assertContains(response, q.full_url, html=True)
+            self.assertContains(response, q.short_url, html=True)
 
     def test_accordance_validation_view(self):
         """
